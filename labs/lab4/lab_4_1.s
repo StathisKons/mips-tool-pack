@@ -37,37 +37,35 @@ main:
     syscall      # exit
 
 MinMax:
-    addi $sp, $sp, -8
-    sw $s0, 0($sp)
-    sw $s1, 4($sp)
-
     blt $a0, $a1, A1gret
-    move $v1, $a0
-    move $v0, $a1
+A0gret:
+    move $v0, $a0
+    move $v1, $a1
     j done1
 A1gret:
-    move $v1, $a1
-    move $v0, $a0
+    move $v0, $a1
+    move $v1, $a0
 done1:
-    blt $a2, $a3, A3gret
-    move $s0, $a3
-    move $s1, $a2
-    j done2
+compare2_with_3:
+    bge $a2, $a3, A2gret
+
 A3gret:
-    move $s0, $a2
-    move $s1, $a3
-done2:
-    blt $s0, $v0, s0less
-    j done3
-s0less:
-    move $v0, $s0
-done3:
-    bgt $s1, $v1, v1gret
-    j done4
-v1gret:
-    move $v1, $s1
-done4:
-    lw $s0, 0($sp)
-    lw $s1, 4($sp)
-    addi $sp, $sp, 8
+  is3max:
+    bge $v0, $a3, is2min
+    move $v0, $a3
+  is2min:
+    blt $v1, $a2, done
+    move $v1, $a2
+
+    j done
+
+A2gret:
+  is2max:
+    bge $v0, $a2, is3min
+    move $v0, $a2
+  is3min:
+    blt $v1, $a3, done
+    move $v1, $a3
+
+done:
     jr $ra
